@@ -1,0 +1,40 @@
+group 'ninebow'
+version '1.0'
+
+apply plugin: 'java'
+apply plugin: 'application'
+
+sourceCompatibility = 1.8
+
+mainClassName = "app.Application"
+
+repositories {
+    mavenCentral()
+    jcenter()
+    maven { url "https://jitpack.io" }
+}
+
+dependencies {
+    compile 'com.github.shin285:KOMORAN:3.3.2'
+
+    compile 'commons-io:commons-io:2.5'
+    compile 'commons-configuration:commons-configuration:1.10'
+}
+
+jar {
+    manifest {
+        attributes 'Title': 'KOMORAN PoS Tagger', 'Version': version, 'Main-Class': mainClassName
+    }
+    archiveName 'KOMORANPoSTagger.jar'
+    dependsOn configurations.runtime
+    from {
+        configurations.compile.collect {it.isDirectory()? it: zipTree(it)}
+    }
+}
+
+run {
+    // ./gradlew run -P corpus="./data/corpus.filename"
+    if (project.hasProperty("corpus")) {
+        args(corpus)
+    }
+}
